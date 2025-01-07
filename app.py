@@ -11,7 +11,7 @@ st.set_page_config(page_title="Hotel Reviews Dashboard", layout="wide")
 
 # Load data
 uploaded_file = "/mnt/data/Edit_Review.csv"  # Replace with your actual file path
-data = pd.read_csv(uploaded_file, encoding='utf-8-sig')  # Use utf-8-sig for multilingual support
+data = pd.read_csv(uploaded_file, encoding='latin1')  # Use utf-8-sig for multilingual support
 
 
 # Data preprocessing
