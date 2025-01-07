@@ -33,7 +33,7 @@ hotel_list = [
     'Altera Hotel and Residence',
     'Arbour Hotel and Residence Pattaya, Thailand',
     'Arden Hotel and Residence',
-    'Aster Hotel and Residence Pattaya',
+    'Aster Hotel and Residence',
     'Hotel Amber Pattaya',
     'Hotel Amber Sukhumvit 85',
     'The Grass Serviced Suites Pattaya',
