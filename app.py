@@ -8,7 +8,8 @@ st.set_page_config(layout="wide")
 
 # Load the dataset
 data_file = "/path/to/your/Edit_Review.csv"
-df = pd.read_csv(data_file)
+df = pd.read_csv(data_file, encoding="ISO-8859-1")  # Or other encoding if needed
+
 
 # Header
 st.title("Restaurant Dashboard")
