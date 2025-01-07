@@ -25,22 +25,22 @@ st.title("Review Hotel Dashboard")
 st.header("Overall")
 
 # Chart 1: Pie chart for Altera Hotel And Residence
-altera_data = df[df['Hotel'] == 'Altera Hotel And Residence']
+altera_data = df[df['Hotel'] == 'Altera Hotel and Residence']
 altera_pie = px.pie(
     altera_data,
     names='Rating Group',
-    title="Altera Hotel And Residence: Rating Distribution",
+    title="Altera Hotel And Residence",
     color='Rating Group',
     color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
 )
 st.plotly_chart(altera_pie, use_container_width=True)
 
 # Chart 2: Pie chart for Arbour Hotel And Residence Pattaya, Thailand
-arbour_data = df[df['Hotel'] == 'Arbour Hotel And Residence Pattaya, Thailand']
+arbour_data = df[df['Hotel'] == 'Arbour Hotel and Residence Pattaya, Thailand']
 arbour_pie = px.pie(
     arbour_data,
     names='Rating Group',
-    title="Arbour Hotel And Residence Pattaya: Rating Distribution",
+    title="Arbour Hotel And Residence Pattaya",
     color='Rating Group',
     color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
 )
@@ -51,18 +51,18 @@ arden_data = df[df['Hotel'] == 'Arden Hotel and Residence']
 arden_pie = px.pie(
     arden_data,
     names='Rating Group',
-    title="Arden Hotel and Residence: Rating Distribution",
+    title="Arden Hotel and Residence",
     color='Rating Group',
     color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
 )
 st.plotly_chart(arden_pie, use_container_width=True)
 
 # Chart 4: Pie chart for Aster Hotel and Residence Pattaya
-aster_data = df[df['Hotel'] == 'Aster Hotel and Residence Pattaya']
+aster_data = df[df['Hotel'] == 'Aster Hotel and Residence']
 aster_pie = px.pie(
     aster_data,
     names='Rating Group',
-    title="Aster Hotel and Residence Pattaya: Rating Distribution",
+    title="Aster Hotel and Residence Pattaya",
     color='Rating Group',
     color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
 )
@@ -76,7 +76,7 @@ amber_pattaya_data = df[df['Hotel'] == 'Hotel Amber Pattaya']
 amber_pattaya_pie = px.pie(
     amber_pattaya_data,
     names='Rating Group',
-    title="Hotel Amber Pattaya: Rating Distribution",
+    title="Hotel Amber Pattaya",
     color='Rating Group',
     color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
 )
@@ -87,7 +87,7 @@ amber_sukhumvit_data = df[df['Hotel'] == 'Hotel Amber Sukhumvit 85']
 amber_sukhumvit_pie = px.pie(
     amber_sukhumvit_data,
     names='Rating Group',
-    title="Hotel Amber Sukhumvit 85: Rating Distribution",
+    title="Hotel Amber Sukhumvit 85",
     color='Rating Group',
     color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
 )
@@ -98,7 +98,7 @@ grass_data = df[df['Hotel'] == 'The Grass Serviced Suites Pattaya']
 grass_pie = px.pie(
     grass_data,
     names='Rating Group',
-    title="The Grass Serviced Suites Pattaya: Rating Distribution",
+    title="The Grass Serviced Suites Pattaya",
     color='Rating Group',
     color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
 )
