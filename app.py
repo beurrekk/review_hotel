@@ -6,9 +6,13 @@ import plotly.graph_objects as go
 # Set Streamlit to wide mode
 st.set_page_config(layout="wide")
 
-# Load the dataset
-data_file = "/path/to/your/Edit_Review.csv"
-df = pd.read_csv(data_file, encoding="ISO-8859-1")  # Or other encoding if needed
+import os
+
+data_file = "Edit_Review.csv"  # Replace with your file path
+if os.path.exists(data_file):
+    print("File exists!")
+else:
+    print("File not found. Check the path.")
 
 
 # Header
