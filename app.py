@@ -19,31 +19,114 @@ df['Month'] = df['Review Date'].dt.to_period('M')
 custom_colors = ['#F2DD83', '#9A8CB5','#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2']
 
 # Header
-st.title("Restaurant Dashboard")
+st.title("Review Hotel Dashboard")
 
 # Overall Section
 st.header("Overall")
 
-# Create two columns for charts
-col1, col2 = st.columns(2)
+# Chart 1: Pie chart for Altera Hotel And Residence
+altera_data = df[df['Hotel'] == 'Altera Hotel And Residence']
+altera_pie = px.pie(
+    altera_data,
+    names='Rating Group',
+    title="Altera Hotel And Residence: Rating Distribution",
+    color='Rating Group',
+    color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
+)
+st.plotly_chart(altera_pie, use_container_width=True)
 
-# Chart 1: Bar chart for count of reviews by hotel
-chart1_data = df.groupby(['Hotel', 'Rating Group']).size().reset_index(name='Count')
-chart1 = px.bar(
-    chart1_data,
+# Chart 2: Pie chart for Arbour Hotel And Residence Pattaya, Thailand
+arbour_data = df[df['Hotel'] == 'Arbour Hotel And Residence Pattaya, Thailand']
+arbour_pie = px.pie(
+    arbour_data,
+    names='Rating Group',
+    title="Arbour Hotel And Residence Pattaya: Rating Distribution",
+    color='Rating Group',
+    color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
+)
+st.plotly_chart(arbour_pie, use_container_width=True)
+
+# Chart 3: Pie chart for Arden Hotel and Residence
+arden_data = df[df['Hotel'] == 'Arden Hotel and Residence']
+arden_pie = px.pie(
+    arden_data,
+    names='Rating Group',
+    title="Arden Hotel and Residence: Rating Distribution",
+    color='Rating Group',
+    color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
+)
+st.plotly_chart(arden_pie, use_container_width=True)
+
+# Chart 4: Pie chart for Aster Hotel and Residence Pattaya
+aster_data = df[df['Hotel'] == 'Aster Hotel and Residence Pattaya']
+aster_pie = px.pie(
+    aster_data,
+    names='Rating Group',
+    title="Aster Hotel and Residence Pattaya: Rating Distribution",
+    color='Rating Group',
+    color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
+)
+st.plotly_chart(aster_pie, use_container_width=True)
+
+# Create a new row for the next set of charts
+st.markdown("---")
+
+# Chart 5: Pie chart for Hotel Amber Pattaya
+amber_pattaya_data = df[df['Hotel'] == 'Hotel Amber Pattaya']
+amber_pattaya_pie = px.pie(
+    amber_pattaya_data,
+    names='Rating Group',
+    title="Hotel Amber Pattaya: Rating Distribution",
+    color='Rating Group',
+    color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
+)
+st.plotly_chart(amber_pattaya_pie, use_container_width=True)
+
+# Chart 6: Pie chart for Hotel Amber Sukhumvit 85
+amber_sukhumvit_data = df[df['Hotel'] == 'Hotel Amber Sukhumvit 85']
+amber_sukhumvit_pie = px.pie(
+    amber_sukhumvit_data,
+    names='Rating Group',
+    title="Hotel Amber Sukhumvit 85: Rating Distribution",
+    color='Rating Group',
+    color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
+)
+st.plotly_chart(amber_sukhumvit_pie, use_container_width=True)
+
+# Chart 7: Pie chart for The Grass Serviced Suites Pattaya
+grass_data = df[df['Hotel'] == 'The Grass Serviced Suites Pattaya']
+grass_pie = px.pie(
+    grass_data,
+    names='Rating Group',
+    title="The Grass Serviced Suites Pattaya: Rating Distribution",
+    color='Rating Group',
+    color_discrete_map={'rating 4 up': '#9A8CB5', 'rating 0.5-3.9': '#F2DD83'}
+)
+st.plotly_chart(grass_pie, use_container_width=True)
+
+# Create a new row for the next chart
+st.markdown("---")
+
+# Chart 8: Stacked bar chart for count of reviews by Review Site
+chart8_data = df.groupby(['Hotel', 'Review Site']).size().reset_index(name='Count')
+chart8 = px.bar(
+    chart8_data,
     x='Hotel',
     y='Count',
-    color='Rating Group',
-    barmode='stack',
-    color_discrete_sequence=['#9A8CB5', '#F2DD83'],
-    title="Review Counts by Hotel and Rating Group"
+    color='Review Site',
+    title="Review Count Distribution by Review Site",
+    color_discrete_sequence=custom_colors
 )
-col1.plotly_chart(chart1, use_container_width=True)
+chart8.update_layout(xaxis={'categoryorder': 'total descending'})
+st.plotly_chart(chart8, use_container_width=True)
 
-# Chart 2: Combined bar and line chart for average rating by month and hotel
-chart2_data = df.groupby(['Month', 'Hotel'])['Rating'].mean().reset_index()
+# Create a new row for the next chart
+st.markdown("---")
+
+# Chart 9: Combined bar and line chart for average rating by month and hotel
+chart9_data = df.groupby(['Month', 'Hotel'])['Rating'].mean().reset_index()
 overall_avg = df.groupby('Month')['Rating'].mean().reset_index()
-chart2_data['Month'] = chart2_data['Month'].astype(str)
+chart9_data['Month'] = chart9_data['Month'].astype(str)
 overall_avg['Month'] = overall_avg['Month'].astype(str)
 
 fig = go.Figure()
@@ -57,8 +140,8 @@ fig.add_trace(go.Bar(
 ))
 
 # Add line chart for average rating by hotel
-for hotel in chart2_data['Hotel'].unique():
-    hotel_data = chart2_data[chart2_data['Hotel'] == hotel]
+for hotel in chart9_data['Hotel'].unique():
+    hotel_data = chart9_data[chart9_data['Hotel'] == hotel]
     fig.add_trace(go.Scatter(
         x=hotel_data['Month'],
         y=hotel_data['Rating'],
@@ -75,4 +158,4 @@ fig.update_layout(
     legend_title="Legend",
     template="plotly_white"
 )
-col2.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
