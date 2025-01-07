@@ -8,7 +8,7 @@ st.set_page_config(layout="wide")
 
 # Load the dataset
 uploaded_file = '/mnt/data/Edit_Review.csv'
-df = pd.read_csv(uploaded_file)
+df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
 # Parse dates and extract relevant fields
 df['Review Date'] = pd.to_datetime(df['Review Date'], format='%d/%m/%Y')
