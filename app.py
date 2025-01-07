@@ -27,7 +27,6 @@ st.title("Restaurant Dashboard")
 st.header("Overall")
 
 
-
 # Chart 1: Bar chart for count of reviews by hotel
 chart1_data = df.groupby(['Hotel', 'Rating Group']).size().reset_index(name='Count')
 chart1 = px.bar(
@@ -53,6 +52,3 @@ chart2 = px.area(
 )
 st.plotly_chart(chart2, use_container_width=True)
 
-# Language note
-st.sidebar.markdown("**Note:** This dataset includes reviews in multiple languages.")
-st.sidebar.markdown(", ".join(df['Language'].unique()))
