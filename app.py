@@ -62,7 +62,7 @@ for hotel in chart2_data['Hotel'].unique():
     fig.add_trace(go.Scatter(
         x=hotel_data['Month'],
         y=hotel_data['Rating'],
-        mode='lines+markers',
+        mode='lines',  # Remove markers (spots) from the line chart
         name=f'{hotel} Average Rating'
     ))
 
@@ -70,6 +70,7 @@ fig.update_layout(
     title="Average Rating by Month and Hotel",
     xaxis_title="Month",
     yaxis_title="Average Rating",
+    yaxis=dict(range=[4, 5]),  # Set y-axis range to [4, 5]
     barmode='group',
     legend_title="Legend",
     template="plotly_white"
