@@ -10,8 +10,9 @@ custom_colors = ['#F2DD83', '#CBD9EF', '#FCD5C6', '#9A8CB5', '#EB9861', '#72884B
 st.set_page_config(page_title="Hotel Reviews Dashboard", layout="wide")
 
 # Load data
-uploaded_file = "Edit_Review.csv"
-data = pd.read_csv(uploaded_file)
+uploaded_file = "/mnt/data/Edit_Review.csv"  # Replace with your actual file path
+data = pd.read_csv(uploaded_file, encoding='utf-8-sig')  # Use utf-8-sig for multilingual support
+
 
 # Data preprocessing
 data['Revinate Collected Date'] = pd.to_datetime(data['Revinate Collected Date'], format='%d/%m/%Y')
