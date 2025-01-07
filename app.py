@@ -125,48 +125,48 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Chart 10: Scatter chart - Count of Google reviews vs OTA reviews
 st.markdown("---")
-st.markdown("### Chart 10: Google vs OTA Review Counts")
+st.markdown("### Chart 10: Correlation Between Google and OTA Review Counts")
 
 # Calculate counts for Google and OTA review sites
-google_count = df[df['Review Site'] == 'Google'].groupby('Hotel').size().reset_index(name='Google Count')
-ota_count = df[df['Review Site'] != 'Google'].groupby('Hotel').size().reset_index(name='OTA Count')
+google_counts = df[df['Review Site'] == 'Google'].groupby('Hotel').size().reset_index(name='Google Count')
+ota_counts = df[df['Review Site'] != 'Google'].groupby('Hotel').size().reset_index(name='OTA Count')
 
 # Merge Google and OTA counts into a single dataframe
-count_data = pd.merge(google_count, ota_count, on='Hotel', how='outer').fillna(0)
+count_data = pd.merge(google_counts, ota_counts, on='Hotel', how='outer').fillna(0)
 
-# Create scatter plot
+# Create scatter plot for counts
 chart10 = px.scatter(
     count_data,
     x='OTA Count',
     y='Google Count',
-    text='Hotel',
-    title="Google vs OTA Review Counts",
+    title="Google vs OTA Review Counts (Correlation)",
     labels={"OTA Count": "OTA Review Count", "Google Count": "Google Review Count"},
     color_discrete_sequence=['#9A8CB5']  # Custom color for the scatter points
 )
 chart10.update_traces(marker=dict(size=10, line=dict(width=2, color='DarkSlateGrey')))
+chart10.update_layout(xaxis_title="OTA Review Count", yaxis_title="Google Review Count")
 st.plotly_chart(chart10, use_container_width=True)
 
 # Chart 11: Scatter chart - Google rating vs OTA rating
 st.markdown("---")
-st.markdown("### Chart 11: Google vs OTA Ratings")
+st.markdown("### Chart 11: Correlation Between Google and OTA Ratings")
 
 # Calculate average ratings for Google and OTA review sites
-google_rating = df[df['Review Site'] == 'Google'].groupby('Hotel')['Rating'].mean().reset_index(name='Google Rating')
-ota_rating = df[df['Review Site'] != 'Google'].groupby('Hotel')['Rating'].mean().reset_index(name='OTA Rating')
+google_ratings = df[df['Review Site'] == 'Google'].groupby('Hotel')['Rating'].mean().reset_index(name='Google Rating')
+ota_ratings = df[df['Review Site'] != 'Google'].groupby('Hotel')['Rating'].mean().reset_index(name='OTA Rating')
 
 # Merge Google and OTA ratings into a single dataframe
-rating_data = pd.merge(google_rating, ota_rating, on='Hotel', how='outer').fillna(0)
+rating_data = pd.merge(google_ratings, ota_ratings, on='Hotel', how='outer').fillna(0)
 
-# Create scatter plot
+# Create scatter plot for ratings
 chart11 = px.scatter(
     rating_data,
     x='OTA Rating',
     y='Google Rating',
-    text='Hotel',
-    title="Google vs OTA Ratings",
+    title="Google vs OTA Ratings (Correlation)",
     labels={"OTA Rating": "OTA Average Rating", "Google Rating": "Google Average Rating"},
     color_discrete_sequence=['#F2DD83']  # Custom color for the scatter points
 )
 chart11.update_traces(marker=dict(size=10, line=dict(width=2, color='DarkSlateGrey')))
+chart11.update_layout(xaxis_title="OTA Average Rating", yaxis_title="Google Average Rating")
 st.plotly_chart(chart11, use_container_width=True)
