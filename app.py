@@ -123,54 +123,31 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 
-# Chart 10: Scatter chart - Count of Google reviews vs OTA reviews
+# Chart 10: Scatter chart - Correlation between Google and OTA Ratings
 st.markdown("---")
-st.markdown("### Chart 10: Google vs OTA Review Counts (All Data Points)")
+st.markdown("### Chart 10: Correlation Between Google and OTA Ratings (All Data Points)")
 
-# Create a column to identify OTA reviews (all review sites except Google)
-df['Review Type'] = df['Review Site'].apply(lambda x: 'Google' if x == 'Google' else 'OTA')
+# Separate Google and OTA reviews
+google_reviews = df[df['Review Site'] == 'Google'][['Rating', 'Review Date']].rename(columns={'Rating': 'Google Rating'})
+ota_reviews = df[df['Review Site'] != 'Google'][['Rating', 'Review Date']].rename(columns={'Rating': 'OTA Rating'})
 
-# Count reviews by type (Google/OTA) for each individual review
-df_counts = df.groupby(['Review Type', 'Review Date']).size().reset_index(name='Count')
+# Merge Google and OTA ratings on the review date for comparison
+scatter_data_correlation = pd.merge(google_reviews, ota_reviews, on='Review Date', how='inner')
 
-# Separate Google and OTA reviews into different dataframes
-google_reviews = df_counts[df_counts['Review Type'] == 'Google']
-ota_reviews = df_counts[df_counts['Review Type'] == 'OTA']
-
-# Merge Google and OTA counts on the review date for direct comparison
-scatter_data_counts = pd.merge(google_reviews, ota_reviews, on='Review Date', how='inner', suffixes=('_Google', '_OTA'))
-
-# Create scatter plot for review counts
+# Create scatter plot for correlation between Google and OTA ratings
 chart10 = px.scatter(
-    scatter_data_counts,
-    x='Count_OTA',
-    y='Count_Google',
-    title="Scatter Plot: Google vs OTA Review Counts",
-    labels={'Count_OTA': 'OTA Review Count', 'Count_Google': 'Google Review Count'},
+    scatter_data_correlation,
+    x='OTA Rating',
+    y='Google Rating',
+    title="Scatter Plot: Correlation Between Google and OTA Ratings",
+    labels={'OTA Rating': 'OTA Ratings', 'Google Rating': 'Google Ratings'},
     color_discrete_sequence=['#9A8CB5']
 )
 chart10.update_traces(marker=dict(size=8, line=dict(width=1, color='DarkSlateGrey')))
-st.plotly_chart(chart10, use_container_width=True)
-
-# Chart 11: Scatter chart - Google ratings vs OTA ratings
-st.markdown("---")
-st.markdown("### Chart 11: Google vs OTA Ratings (All Data Points)")
-
-# Separate Google and OTA ratings
-google_ratings = df[df['Review Site'] == 'Google'][['Rating', 'Review Date']].rename(columns={'Rating': 'Google Rating'})
-ota_ratings = df[df['Review Site'] != 'Google'][['Rating', 'Review Date']].rename(columns={'Rating': 'OTA Rating'})
-
-# Merge Google and OTA ratings on the review date for direct comparison
-scatter_data_ratings = pd.merge(google_ratings, ota_ratings, on='Review Date', how='inner')
-
-# Create scatter plot for ratings
-chart11 = px.scatter(
-    scatter_data_ratings,
-    x='OTA Rating',
-    y='Google Rating',
-    title="Scatter Plot: Google vs OTA Ratings",
-    labels={'OTA Rating': 'OTA Rating', 'Google Rating': 'Google Rating'},
-    color_discrete_sequence=['#F2DD83']
+chart10.update_layout(
+    xaxis_title="OTA Ratings",
+    yaxis_title="Google Ratings",
+    template="plotly_white"
 )
-chart11.update_traces(marker=dict(size=8, line=dict(width=1, color='DarkSlateGrey')))
-st.plotly_chart(chart11, use_container_width=True)
+
+st.plotly_chart(chart10, use_container_width=True)
