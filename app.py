@@ -24,6 +24,8 @@ st.title("Restaurant Dashboard")
 # Overall Section
 st.header("Overall")
 
+# Create two columns for charts
+col1, col2 = st.columns(2)
 
 # Chart 1: Bar chart for count of reviews by hotel
 chart1_data = df.groupby(['Hotel', 'Rating Group']).size().reset_index(name='Count')
@@ -51,7 +53,7 @@ fig.add_trace(go.Bar(
     x=overall_avg['Month'],
     y=overall_avg['Rating'],
     name='Overall Average Rating',
-    marker_color=custom_colors[0]
+    marker_color='#F2DD83'
 ))
 
 # Add line chart for average rating by hotel
@@ -60,7 +62,7 @@ for hotel in chart2_data['Hotel'].unique():
     fig.add_trace(go.Scatter(
         x=hotel_data['Month'],
         y=hotel_data['Rating'],
-        mode='lines',  # Remove markers (spots) from the line chart
+        mode='lines',  # Line chart without markers
         name=f'{hotel} Average Rating'
     ))
 
@@ -68,7 +70,7 @@ fig.update_layout(
     title="Average Rating by Month and Hotel",
     xaxis_title="Month",
     yaxis_title="Average Rating",
-    yaxis=dict(range=[4.4, 5]),  # Set y-axis range to [4.4, 5]
+    yaxis_range=[4.4, 5],
     barmode='group',
     legend_title="Legend",
     template="plotly_white"
