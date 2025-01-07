@@ -8,7 +8,7 @@ st.set_page_config(layout="wide", page_title="Hotel Reviews Dashboard")
 
 # Load data
 uploaded_file = "Edit_Review.csv"
-df = pd.read_csv(uploaded_file)
+df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
 # Data preprocessing
 df['Rating Group'] = df['Rating'].apply(lambda x: 'rating 4 up' if x >= 4 else 'rating 0.5-3.9')
