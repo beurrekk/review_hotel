@@ -7,5 +7,11 @@ import plotly.graph_objects as go
 st.set_page_config(layout="wide")
 
 # Load the dataset
-data_file = 'test_data.csv'
+data_file = 'Edit_Review.csv'
 df = pd.read_csv(data_file)
+
+# Header
+st.title("Restaurant Dashboard")
+
+# Overall Section
+st.header("Overall")
