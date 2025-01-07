@@ -20,24 +20,30 @@ def categorize_rating(rating):
 
 df['Rating Group'] = df['Rating'].apply(categorize_rating)
 
+# Language filter
+df['Language'] = df['Language'].fillna('Unknown')
+languages = df['Language'].unique()
+selected_language = st.sidebar.selectbox("Select a language", options=languages)
+filtered_df = df[df['Language'] == selected_language]
+
 # Chart 1: Bar chart for review count by hotel
-bar_data = df.groupby(['Hotel', 'Rating Group']).size().reset_index(name='Count')
+bar_data = filtered_df.groupby(['Hotel', 'Rating Group']).size().reset_index(name='Count')
 fig_bar = px.bar(
     bar_data, 
     x='Hotel', 
     y='Count', 
     color='Rating Group',
-    title='Review Count by Hotel and Rating Group',
+    title=f'Review Count by Hotel and Rating Group ({selected_language})',
     color_discrete_sequence=['#9A8CB5', '#EB9861']
 )
 
 # Chart 2: Line chart for average rating by month
-line_data = df.groupby('Month').agg({'Rating': 'mean'}).reset_index()
+line_data = filtered_df.groupby('Month').agg({'Rating': 'mean'}).reset_index()
 fig_line = px.area(
     line_data, 
     x='Month', 
     y='Rating', 
-    title='Average Rating by Month',
+    title=f'Average Rating by Month ({selected_language})',
     color_discrete_sequence=['#567BA2']
 )
 
@@ -50,5 +56,5 @@ st.plotly_chart(fig_bar, use_container_width=True)
 st.plotly_chart(fig_line, use_container_width=True)
 
 # Show raw data
-st.write('Raw Data:')
-st.dataframe(df)
+st.write(f'Raw Data ({selected_language}):')
+st.dataframe(filtered_df)
