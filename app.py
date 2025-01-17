@@ -51,21 +51,28 @@ fig2 = px.bar(
 # Chart 3: Scatter chart of Google vs OTA reviews by month
 df['Revinate Collected Date'] = pd.to_datetime(df['Revinate Collected Date'], format='%d/%m/%Y')
 df['Month'] = df['Revinate Collected Date'].dt.to_period('M')
-monthly_counts = df.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
-monthly_counts.columns.name = None
 
-fig3 = px.scatter(
-    monthly_counts,
-    x='Google',
-    y='OTA',
-    title='Google vs OTA Reviews by Month',
-    labels={'Google': 'Google Reviews (Count)', 'OTA': 'OTA Reviews (Count)'},
-    trendline='ols',
-    color_discrete_sequence=['#9A8CB5']
+# Group by month and review group, then calculate counts
+monthly_counts = df.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
+
+# Ensure columns are named correctly
+if 'Google' not in monthly_counts.columns or 'OTA' not in monthly_counts.columns:
+    st.error("Error: Monthly counts DataFrame is missing 'Google' or 'OTA' columns.")
+else:
+    fig3 = px.scatter(
+        monthly_counts,
+        x='Google',
+        y='OTA',
+        title='Google vs OTA Reviews by Month',
+        labels={'Google': 'Google Reviews (Count)', 'OTA': 'OTA Reviews (Count)'},
+        trendline='ols',
+        color_discrete_sequence=['#9A8CB5']
+    )
+    st.plotly_chart(fig3, use_container_width=True)
+
 )
 
 # Display the charts
 st.title("Hotel Review Dashboard")
 st.plotly_chart(fig1, use_container_width=True)
 st.plotly_chart(fig2, use_container_width=True)
-st.plotly_chart(fig3, use_container_width=True)
