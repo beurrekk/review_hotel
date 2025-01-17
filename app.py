@@ -42,5 +42,31 @@ fig.update_traces(textposition='inside')
 # Header
 st.title("Review Hotel Dashboard")
 
-# Display the chart
+# Display the stacked bar chart
 st.plotly_chart(fig, use_container_width=True)
+
+# 2nd Chart: Horizontal bar chart for rating counts
+st.header("Rating Distribution")
+
+# Filter for selected hotel
+selected_hotel = st.selectbox("Select a Hotel", options=df['Hotel'].unique())
+filtered_df = df[df['Hotel'] == selected_hotel]
+
+# Aggregate rating data
+rating_data = filtered_df['Rating'].value_counts().reset_index()
+rating_data.columns = ['Rating', 'Count']
+rating_data.sort_values('Rating', inplace=True)
+
+# Create horizontal bar chart
+fig2 = px.bar(
+    rating_data,
+    x='Count',
+    y='Rating',
+    orientation='h',
+    title=f'Rating Distribution for {selected_hotel}',
+    labels={'Count': 'Number of Ratings', 'Rating': 'Rating'},
+    color_discrete_sequence=['#EB9861']  # Custom color
+)
+
+# Display the horizontal bar chart
+st.plotly_chart(fig2, use_container_width=True)
