@@ -66,12 +66,6 @@ fig3 = px.scatter(
 )
 fig3.update_traces(marker=dict(size=10, line=dict(width=1, color='DarkSlateGrey')))
 
-# Display the charts
-st.title("Hotel Review Dashboard")
-st.plotly_chart(fig1, use_container_width=True)
-st.plotly_chart(fig2, use_container_width=True)
-st.plotly_chart(fig3, use_container_width=True)
-
 # Add filter for Chart 3 below the chart
 selected_hotel_chart3 = st.selectbox('Filter Hotel for Google vs OTA Reviews (Chart 3):', df['Hotel'].unique())
 filtered_monthly_counts = monthly_counts[df['Hotel'].isin([selected_hotel_chart3])]
@@ -88,8 +82,11 @@ fig3_filtered.update_traces(marker=dict(size=10, line=dict(width=1, color='DarkS
 
 st.plotly_chart(fig3_filtered, use_container_width=True)
 
-# Add table showing months with data for each hotel
-st.subheader("Months with Data for Each Hotel")
-months_with_data = df.groupby('Hotel')['Review Month'].unique().reset_index()
-months_with_data['Review Month'] = months_with_data['Review Month'].apply(lambda x: ', '.join(str(month) for month in sorted(x)))
-st.dataframe(months_with_data.rename(columns={'Review Month': 'Months with Data'}))
+# Table: Data availability per hotel by month
+df['Review Month String'] = pd.to_datetime(df['Review Date'], dayfirst=True).dt.strftime('%b %Y')
+data_availability = df.groupby('Hotel')['Review Month String'].unique().reset_index()
+data_availability['Review Months'] = data_availability['Review Month String'].apply(lambda x: ', '.join(sorted(x, key=lambda date: pd.to_datetime(date, format='%b %Y'))))
+data_availability = data_availability[['Hotel', 'Review Months']]
+
+st.subheader("Data Availability per Hotel by Month")
+st.dataframe(data_availability, use_container_width=True)
