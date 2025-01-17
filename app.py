@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 
-# Set Streamlit layout to wide mode
-st.set_page_config(layout="wide")
+# Load data
+uploaded_file = "Edit_Review.csv"
+df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
 # Load data
 uploaded_file = "Edit_Review.csv"
