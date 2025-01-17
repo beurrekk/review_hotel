@@ -3,16 +3,15 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+# Set Streamlit layout to wide mode
+st.set_page_config(layout="wide")
+
 # Load data
 uploaded_file = "Edit_Review.csv"
 df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
-# Load data
-uploaded_file = "Edit_Review.csv"
-df = pd.read_excel(uploaded_file)
-
 # Define custom colors
-colors = ['#F2DD83', '#9A8CB5','#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2']
+colors = ['#F2DD83', '#9A8CB5','#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2'] 
 
 # Header
 st.title("Review Hotel Dashboard")
