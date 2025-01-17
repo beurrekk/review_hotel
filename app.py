@@ -14,6 +14,9 @@ df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 # Group review sites into 'Google' and 'OTA'
 df['Review Group'] = df['Review Site'].apply(lambda x: 'Google' if x.lower() == 'google' else 'OTA')
 
+# Define custom colors
+colors = ['#F2DD83', '#9A8CB5','#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2']
+
 # Chart 1: Stacked bar chart of review counts by hotel and review site
 review_counts = df.groupby(['Hotel', 'Review Group']).size().reset_index(name='Count')
 review_totals = review_counts.groupby('Hotel')['Count'].transform('sum')
@@ -25,7 +28,7 @@ fig1 = px.bar(
     y='Count',
     color='Review Group',
     text='Percentage',
-    color_discrete_sequence=['#567BA2', '#FCD5C6'],
+    color_discrete_sequence=['#FCD5C6', '#567BA2'],  # OTA below, Google above
     title='Review Counts by Hotel and Review Site',
     labels={'Count': 'Number of Reviews', 'Hotel': 'Hotel Name', 'Review Group': 'Review Site'}
 )
@@ -45,10 +48,26 @@ fig2 = px.bar(
     orientation='h',
     title=f'Rating Distribution (4.0-5.0) for {filtered_hotel}',
     labels={'Count': 'Number of Ratings', 'Rating': 'Rating'},
-    color_discrete_sequence=['#F2DD83']
+    color_discrete_sequence=[colors[0]]
 )
+
+# Chart 3: Scatter chart of reviews by month for Google and OTA
+df['Review Month'] = pd.to_datetime(df['Review Date'], dayfirst=True).dt.to_period('M')
+monthly_counts = df.groupby(['Review Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
+monthly_counts.columns.name = None  # Remove the index name for clarity
+
+fig3 = px.scatter(
+    monthly_counts,
+    x='Google',
+    y='OTA',
+    title='Google vs OTA Review Counts by Month',
+    labels={'Google': 'Google Review Count', 'OTA': 'OTA Review Count'},
+    color_discrete_sequence=[colors[5]]
+)
+fig3.update_traces(marker=dict(size=10, line=dict(width=1, color='DarkSlateGrey')))
 
 # Display the charts
 st.title("Hotel Review Dashboard")
 st.plotly_chart(fig1, use_container_width=True)
 st.plotly_chart(fig2, use_container_width=True)
+st.plotly_chart(fig3, use_container_width=True)
