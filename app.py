@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 st.set_page_config(layout="wide")
 
 # Load data
-uploaded_file = '/mnt/data/Edit_Review.csv'
+uploaded_file = 'Edit_Review.csv'
 df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
 # Preprocess data
