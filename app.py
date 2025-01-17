@@ -28,7 +28,7 @@ fig1 = px.bar(
     y='Count',
     color='Review Group',
     text='Percentage',
-    color_discrete_sequence=['#FCD5C6', '#567BA2'],  # OTA below, Google above
+    color_discrete_sequence=['#F2DD83', '#9A8CB5'],  # OTA below, Google above
     title='Review Counts by Hotel and Review Site',
     labels={'Count': 'Number of Reviews', 'Hotel': 'Hotel Name', 'Review Group': 'Review Site'}
 )
@@ -71,3 +71,19 @@ st.title("Hotel Review Dashboard")
 st.plotly_chart(fig1, use_container_width=True)
 st.plotly_chart(fig2, use_container_width=True)
 st.plotly_chart(fig3, use_container_width=True)
+
+# Add filter for Chart 3 below the chart
+selected_hotel_chart3 = st.selectbox('Filter Hotel for Google vs OTA Reviews (Chart 3):', df['Hotel'].unique())
+filtered_monthly_counts = monthly_counts[df['Hotel'].isin([selected_hotel_chart3])]
+
+fig3_filtered = px.scatter(
+    filtered_monthly_counts,
+    x='Google',
+    y='OTA',
+    title=f'Google vs OTA Review Counts by Month for {selected_hotel_chart3}',
+    labels={'Google': 'Google Review Count', 'OTA': 'OTA Review Count'},
+    color_discrete_sequence=[colors[5]]
+)
+fig3_filtered.update_traces(marker=dict(size=10, line=dict(width=1, color='DarkSlateGrey')))
+
+st.plotly_chart(fig3_filtered, use_container_width=True)
