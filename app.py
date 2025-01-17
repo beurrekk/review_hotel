@@ -28,7 +28,7 @@ fig1 = px.bar(
     y='Count',
     color='Review Group',
     text='Percentage',
-    color_discrete_sequence=['#F2DD83', '#9A8CB5'],  # OTA below, Google above
+    color_discrete_sequence=['#FCD5C6', '#567BA2'],  # OTA below, Google above
     title='Review Counts by Hotel and Review Site',
     labels={'Count': 'Number of Reviews', 'Hotel': 'Hotel Name', 'Review Group': 'Review Site'}
 )
@@ -87,3 +87,9 @@ fig3_filtered = px.scatter(
 fig3_filtered.update_traces(marker=dict(size=10, line=dict(width=1, color='DarkSlateGrey')))
 
 st.plotly_chart(fig3_filtered, use_container_width=True)
+
+# Add table showing months with data for each hotel
+st.subheader("Months with Data for Each Hotel")
+months_with_data = df.groupby('Hotel')['Review Month'].unique().reset_index()
+months_with_data['Review Month'] = months_with_data['Review Month'].apply(lambda x: ', '.join(str(month) for month in sorted(x)))
+st.dataframe(months_with_data.rename(columns={'Review Month': 'Months with Data'}))
