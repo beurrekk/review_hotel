@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 st.set_page_config(layout="wide")
 
 # Load data
-uploaded_file = 'Edit_Review.csv'
+uploaded_file = '/mnt/data/Edit_Review.csv'
 df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
 # Preprocess data
@@ -48,20 +48,22 @@ fig2 = px.bar(
     color_discrete_sequence=['#F2DD83']
 )
 
-# Chart 3: Scatter chart of reviews by month for Google and OTA
-df['Review Month'] = pd.to_datetime(df['Review Date'], dayfirst=True).dt.to_period('M')
-monthly_counts = df.groupby(['Review Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
-monthly_counts.columns.name = None  # Remove the index name for clarity
+# Chart 3: Scatter chart for Google vs OTA reviews by month
+df['Revinate Collected Date'] = pd.to_datetime(df['Revinate Collected Date'], format='%d/%m/%Y')
+df['Month'] = df['Revinate Collected Date'].dt.to_period('M')
+monthly_counts = df.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
+monthly_counts.columns = ['Month', 'Google', 'OTA']
 
 fig3 = px.scatter(
     monthly_counts,
     x='Google',
     y='OTA',
-    title='Google vs OTA Review Counts by Month',
-    labels={'Google': 'Google Review Count', 'OTA': 'OTA Review Count'},
-    color_discrete_sequence=['#72884B']
+    title='Google vs OTA Reviews by Month',
+    labels={'Google': 'Google Reviews Count', 'OTA': 'OTA Reviews Count'},
+    text=monthly_counts['Month'].astype(str),
+    color_discrete_sequence=['#9A8CB5']
 )
-fig3.update_traces(marker=dict(size=10, line=dict(width=1, color='DarkSlateGrey')))
+fig3.update_traces(textposition='top center')
 
 # Display the charts
 st.title("Hotel Review Dashboard")
