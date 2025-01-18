@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+
 # Set Streamlit wide mode
 st.set_page_config(layout="wide")
 
@@ -11,87 +12,57 @@ uploaded_file = "Edit_Review.csv"
 df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
 # Preprocess data
-df['Review Group'] = df['Review Site'].apply(lambda x: 'Google' if x == 'Google' else 'OTA')
-df['Review Date'] = pd.to_datetime(df['Review Date'], format='%d/%m/%Y')
+df['Revinate Collected Date'] = pd.to_datetime(df['Revinate Collected Date'], errors='coerce')
+df['Review Date'] = pd.to_datetime(df['Review Date'], errors='coerce')
 df['Month'] = df['Review Date'].dt.to_period('M')
 
-# Define custom colors
-colors = ['#F2DD83', '#9A8CB5','#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2']
+# Categorize Review Site
+def categorize_site(site):
+    return "Google" if site == "Google" else "OTA"
+
+df['Review Group'] = df['Review Site'].apply(categorize_site)
 
 # Header
 st.title("Review Hotel Dashboard")
 
-# Chart 1: Stacked Bar Chart
-chart1_data = df.groupby(['Hotel', 'Review Group']).size().reset_index(name='Count')
-chart1_pivot = chart1_data.pivot(index='Hotel', columns='Review Group', values='Count').fillna(0)
-chart1_pivot['Total'] = chart1_pivot.sum(axis=1)
-chart1_pivot = chart1_pivot.sort_values('Total', ascending=False)
+# Chart 1: Stacked bar chart for count of reviews by hotel and review site
+grouped_data = df.groupby(['Hotel', 'Review Group']).size().reset_index(name='Count')
+grouped_data_total = grouped_data.groupby('Hotel')['Count'].transform('sum')
+grouped_data['Percentage'] = (grouped_data['Count'] / grouped_data_total) * 100
 
-fig1 = go.Figure()
-for group in ['OTA', 'Google']:
-    if group in chart1_pivot.columns:
-        fig1.add_trace(go.Bar(
-            x=chart1_pivot.index,
-            y=chart1_pivot[group],
-            name=group,
-            text=[f"{(count / total * 100):.1f}%" if total > 0 else "0%" \
-                  for count, total in zip(chart1_pivot[group], chart1_pivot['Total'])],
-            textposition='inside'
-        ))
-
-fig1.update_layout(
-    barmode='stack',
-    title="Review Count by Hotel and Source",
-    xaxis_title="Hotel",
-    yaxis_title="Count of Reviews",
-    legend_title="Review Source",
-    template="plotly_white"
+fig1 = px.bar(
+    grouped_data,
+    x='Hotel',
+    y='Count',
+    color='Review Group',
+    text=grouped_data['Percentage'].round(1).astype(str) + '%',
+    title='Count of Reviews by Hotel and Review Site',
+    labels={'Count': 'Number of Reviews'},
 )
+fig1.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
+st.plotly_chart(fig1)
 
-st.plotly_chart(fig1, use_container_width=True)
+# Chart 2: Line chart for average rating by month with filter
+filter_options = ['All', 'Google', 'OTA']
+selected_filter = st.selectbox("Filter by Review Source:", filter_options, index=0)
 
-# Chart 2: Line Chart
-avg_rating_data = df.groupby(['Month', 'Review Group']).agg({'Rating': 'mean'}).reset_index()
-all_avg = df.groupby('Month').agg({'Rating': 'mean'}).reset_index()
-all_avg['Review Group'] = 'All'
-avg_rating_data = pd.concat([avg_rating_data, all_avg])
+if selected_filter == "All":
+    filtered_data = df
+else:
+    filtered_data = df[df['Review Group'] == selected_filter]
 
-selected_groups = st.multiselect(
-    "Select Review Groups for Line Chart:", options=['All', 'Google', 'OTA'], default=['All', 'Google', 'OTA']
-)
-filtered_data = avg_rating_data[avg_rating_data['Review Group'].isin(selected_groups)]
+monthly_avg = filtered_data.groupby(['Month', 'Review Group'])['Rating'].mean().reset_index()
+monthly_avg_all = filtered_data.groupby('Month')['Rating'].mean().reset_index()
+monthly_avg_all['Review Group'] = 'All'
+monthly_avg = pd.concat([monthly_avg, monthly_avg_all])
 
 fig2 = px.line(
-    filtered_data,
+    monthly_avg,
     x='Month',
     y='Rating',
     color='Review Group',
-    title="Average Rating by Month",
+    title='Average Rating by Month',
     labels={'Rating': 'Average Rating', 'Month': 'Month'},
-    template="plotly_white"
 )
-# Filter the data based on selected groups
-selected_groups = st.multiselect(
-    "Select Review Groups for Line Chart:", 
-    options=['All', 'Google', 'OTA'], 
-    default=['All', 'Google', 'OTA']
-)
-filtered_data = avg_rating_data[avg_rating_data['Review Group'].isin(selected_groups)]
-
-# Ensure 'Month' is converted to string for plotly
-filtered_data['Month'] = filtered_data['Month'].astype(str)
-
-# Create the line chart
-fig2 = px.line(
-    filtered_data,
-    x='Month',
-    y='Rating',
-    color='Review Group',
-    title="Average Rating by Month",
-    labels={'Rating': 'Average Rating', 'Month': 'Month'},
-    template="plotly_white"
-)
-fig2.update_xaxes(type='category')
-
-st.plotly_chart(fig2, use_container_width=True)
-
+fig2.update_traces(mode='lines+markers')
+st.plotly_chart(fig2)
