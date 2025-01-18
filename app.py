@@ -23,6 +23,10 @@ def categorize_site(site):
 
 df['Review Group'] = df['Review Site'].apply(categorize_site)
 
+# Order months
+month_order = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+df['Month'] = pd.Categorical(df['Month'], categories=month_order, ordered=True)
+
 # Header
 st.title("Review Hotel Dashboard")
 
@@ -68,4 +72,5 @@ fig2 = px.line(
     color_discrete_sequence=colors
 )
 fig2.update_traces(mode='lines+markers')
+fig2.update_xaxes(categoryorder='array', categoryarray=month_order)
 st.plotly_chart(fig2)
