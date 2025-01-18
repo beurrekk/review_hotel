@@ -74,3 +74,25 @@ fig2 = px.line(
 fig2.update_traces(mode='lines+markers')
 fig2.update_xaxes(categoryorder='array', categoryarray=month_order)
 st.plotly_chart(fig2)
+
+# Chart 3: Scatter chart for count of reviews (OTA vs Google) by month with filter
+hotel_options_scatter = ['All'] + df['Hotel'].unique().tolist()
+selected_hotel_scatter = st.selectbox("Filter by Hotel for Scatter Chart:", hotel_options_scatter, index=0)
+
+if selected_hotel_scatter == "All":
+    scatter_data = df
+else:
+    scatter_data = df[df['Hotel'] == selected_hotel_scatter]
+
+scatter_grouped = scatter_data.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
+scatter_grouped.columns.name = None
+
+fig3 = px.scatter(
+    scatter_grouped,
+    x=scatter_grouped.get('OTA', 0),
+    y=scatter_grouped.get('Google', 0),
+    title='Scatter Chart: OTA vs Google Reviews by Month',
+    labels={'x': 'Count of OTA Reviews', 'y': 'Count of Google Reviews'},
+    color_discrete_sequence=colors
+)
+st.plotly_chart(fig3)
