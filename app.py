@@ -15,7 +15,7 @@ df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 # Preprocess data
 df['Revinate Collected Date'] = pd.to_datetime(df['Revinate Collected Date'], errors='coerce')
 df['Review Date'] = pd.to_datetime(df['Review Date'], errors='coerce')
-df['Month'] = df['Review Date'].dt.to_period('M')
+df['Month'] = df['Review Date'].dt.strftime('%B')
 
 # Categorize Review Site
 def categorize_site(site):
