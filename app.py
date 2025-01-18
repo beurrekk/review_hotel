@@ -10,20 +10,23 @@ st.set_page_config(layout="wide")
 uploaded_file = "Edit_Review.csv"
 df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
+# Preprocess data
+df['Review Group'] = df['Review Site'].apply(lambda x: 'Google' if x == 'Google' else 'OTA')
+df['Review Date'] = pd.to_datetime(df['Review Date'], format='%d/%m/%Y')
+df['Month'] = df['Review Date'].dt.to_period('M')
+
 # Define custom colors
 colors = ['#F2DD83', '#9A8CB5','#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2']
 
 # Header
 st.title("Review Hotel Dashboard")
 
-# Prepare data for Chart 1 (Stacked Bar Chart)
-df['Review Group'] = df['Review Site'].apply(lambda x: 'Google' if x == 'Google' else 'OTA')
+# Chart 1: Stacked Bar Chart
 chart1_data = df.groupby(['Hotel', 'Review Group']).size().reset_index(name='Count')
 chart1_pivot = chart1_data.pivot(index='Hotel', columns='Review Group', values='Count').fillna(0)
 chart1_pivot['Total'] = chart1_pivot.sum(axis=1)
 chart1_pivot = chart1_pivot.sort_values('Total', ascending=False)
 
-# Stacked bar chart
 fig1 = go.Figure()
 for group in ['OTA', 'Google']:
     if group in chart1_pivot.columns:
@@ -47,21 +50,17 @@ fig1.update_layout(
 
 st.plotly_chart(fig1, use_container_width=True)
 
-# Prepare data for Chart 2 (Line Chart)
-df['Review Date'] = pd.to_datetime(df['Review Date'], format='%d/%m/%Y')
-df['Month'] = df['Review Date'].dt.to_period('M')
+# Chart 2: Line Chart
 avg_rating_data = df.groupby(['Month', 'Review Group']).agg({'Rating': 'mean'}).reset_index()
 all_avg = df.groupby('Month').agg({'Rating': 'mean'}).reset_index()
 all_avg['Review Group'] = 'All'
 avg_rating_data = pd.concat([avg_rating_data, all_avg])
 
-# Filter for Chart 2
 selected_groups = st.multiselect(
     "Select Review Groups for Line Chart:", options=['All', 'Google', 'OTA'], default=['All', 'Google', 'OTA']
 )
 filtered_data = avg_rating_data[avg_rating_data['Review Group'].isin(selected_groups)]
 
-# Line chart
 fig2 = px.line(
     filtered_data,
     x='Month',
