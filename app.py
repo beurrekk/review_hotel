@@ -42,27 +42,3 @@ fig1 = px.bar(
 fig1.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
 st.plotly_chart(fig1)
 
-# Chart 2: Line chart for average rating by month with filter
-filter_options = ['All', 'Google', 'OTA']
-selected_filter = st.selectbox("Filter by Review Source:", filter_options, index=0)
-
-if selected_filter == "All":
-    filtered_data = df
-else:
-    filtered_data = df[df['Review Group'] == selected_filter]
-
-monthly_avg = filtered_data.groupby(['Month', 'Review Group'])['Rating'].mean().reset_index()
-monthly_avg_all = filtered_data.groupby('Month')['Rating'].mean().reset_index()
-monthly_avg_all['Review Group'] = 'All'
-monthly_avg = pd.concat([monthly_avg, monthly_avg_all])
-
-fig2 = px.line(
-    monthly_avg,
-    x='Month',
-    y='Rating',
-    color='Review Group',
-    title='Average Rating by Month',
-    labels={'Rating': 'Average Rating', 'Month': 'Month'},
-)
-fig2.update_traces(mode='lines+markers')
-st.plotly_chart(fig2)
