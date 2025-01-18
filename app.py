@@ -11,6 +11,9 @@ st.set_page_config(layout="wide")
 uploaded_file = "Edit_Review.csv"
 df = pd.read_csv(uploaded_file, encoding='ISO-8859-1')
 
+# Define custom colors
+colors = ['#F2DD83', '#9A8CB5','#CBD9EF', '#FCD5C6',  '#EB9861', '#72884B', '#567BA2']
+
 # Preprocess data
 df['Revinate Collected Date'] = pd.to_datetime(df['Revinate Collected Date'], errors='coerce')
 df['Review Date'] = pd.to_datetime(df['Review Date'], errors='coerce')
