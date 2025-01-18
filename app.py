@@ -45,13 +45,13 @@ fig1.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
 st.plotly_chart(fig1)
 
 # Chart 2: Line chart for average rating by month with filter
-filter_options = ['All', 'Google', 'OTA']
-selected_filter = st.selectbox("Filter by Review Source:", filter_options, index=0)
+hotel_options = ['All'] + df['Hotel'].unique().tolist()
+selected_hotel = st.selectbox("Filter by Hotel:", hotel_options, index=0)
 
-if selected_filter == "All":
+if selected_hotel == "All":
     filtered_data = df
 else:
-    filtered_data = df[df['Review Group'] == selected_filter]
+    filtered_data = df[df['Hotel'] == selected_hotel]
 
 monthly_avg = filtered_data.groupby(['Month', 'Review Group'])['Rating'].mean().reset_index()
 monthly_avg_all = filtered_data.groupby('Month')['Rating'].mean().reset_index()
