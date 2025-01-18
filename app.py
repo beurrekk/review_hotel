@@ -70,6 +70,28 @@ fig2 = px.line(
     labels={'Rating': 'Average Rating', 'Month': 'Month'},
     template="plotly_white"
 )
+# Filter the data based on selected groups
+selected_groups = st.multiselect(
+    "Select Review Groups for Line Chart:", 
+    options=['All', 'Google', 'OTA'], 
+    default=['All', 'Google', 'OTA']
+)
+filtered_data = avg_rating_data[avg_rating_data['Review Group'].isin(selected_groups)]
+
+# Ensure 'Month' is converted to string for plotly
+filtered_data['Month'] = filtered_data['Month'].astype(str)
+
+# Create the line chart
+fig2 = px.line(
+    filtered_data,
+    x='Month',
+    y='Rating',
+    color='Review Group',
+    title="Average Rating by Month",
+    labels={'Rating': 'Average Rating', 'Month': 'Month'},
+    template="plotly_white"
+)
 fig2.update_xaxes(type='category')
 
 st.plotly_chart(fig2, use_container_width=True)
+
