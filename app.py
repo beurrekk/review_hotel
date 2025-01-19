@@ -105,14 +105,15 @@ with col1:
 with col2:
     st.plotly_chart(fig3)
 
-# Chart 4: Scatter chart for count of reviews (OTA vs Google) by month with filter
-hotel_options_scatter = ['All'] + df['Hotel'].unique().tolist()
-selected_hotel_scatter = st.selectbox("Filter by Hotel for Scatter Chart:", hotel_options_scatter, index=0, key="chart4_filter")
+# Filter for Chart 4 and Chart 5
+hotel_options_chart45 = ['All'] + df['Hotel'].unique().tolist()
+selected_hotel_chart45 = st.selectbox("Filter by Hotel (Chart 4 and Chart 5):", hotel_options_chart45, index=0, key="chart45_filter")
 
-if selected_hotel_scatter == "All":
+# Chart 4: Scatter chart for count of reviews (OTA vs Google) by month
+if selected_hotel_chart45 == "All":
     scatter_data = df
 else:
-    scatter_data = df[df['Hotel'] == selected_hotel_scatter]
+    scatter_data = df[df['Hotel'] == selected_hotel_chart45]
 
 scatter_grouped = scatter_data.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
 scatter_grouped.columns.name = None
@@ -123,13 +124,15 @@ fig4 = px.scatter(
     y=scatter_grouped.get('Google', 0),
     title='Scatter Chart: OTA vs Google Reviews by Month',
     labels={'x': 'Count of OTA Reviews', 'y': 'Count of Google Reviews'},
-    text=scatter_grouped['Month'],
     color_discrete_sequence=colors
 )
-st.plotly_chart(fig4)
+fig4.update_traces(marker=dict(size=10), hovertemplate='Count of OTA Reviews: %{x}<br>Count of Google Reviews: %{y}')
 
 # Chart 5: Diverging Bar Chart for OTA and Google reviews by month
-diverging_data = df.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
+if selected_hotel_chart45 == "All":
+    diverging_data = df.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
+else:
+    diverging_data = df[df['Hotel'] == selected_hotel_chart45].groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
 diverging_data.columns.name = None
 
 diverging_data['Google'] = -diverging_data['Google']  # Make Google reviews negative for diverging effect
@@ -143,4 +146,10 @@ diverging_fig = px.bar(
     orientation='h',
     color_discrete_sequence=['#9A8CB5', '#F2DD83']
 )
-st.plotly_chart(diverging_fig)
+
+# Display Chart 4 and Chart 5 in two columns
+col3, col4 = st.columns(2)
+with col3:
+    st.plotly_chart(fig4)
+with col4:
+    st.plotly_chart(diverging_fig)
