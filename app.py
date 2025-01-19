@@ -48,10 +48,11 @@ fig1 = px.bar(
 fig1.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
 st.plotly_chart(fig1)
 
-# Chart 2: Line chart for average rating by month with filter
+# Filter for Chart 2 and Chart 3
 hotel_options = ['All'] + df['Hotel'].unique().tolist()
-selected_hotel = st.selectbox("Filter by Hotel:", hotel_options, index=0)
+selected_hotel = st.selectbox("Filter by Hotel (Chart 2 and Chart 3):", hotel_options, index=0)
 
+# Chart 2: Line chart for average rating by month
 if selected_hotel == "All":
     filtered_data = df
 else:
@@ -73,16 +74,12 @@ fig2 = px.line(
 )
 fig2.update_traces(mode='lines+markers')
 fig2.update_xaxes(categoryorder='array', categoryarray=month_order)
-st.plotly_chart(fig2)
 
-# Chart 3: Line chart for count of reviews by month with filter
-hotel_options_chart3 = ['All'] + df['Hotel'].unique().tolist()
-selected_hotel_chart3 = st.selectbox("Filter by Hotel for Chart 3:", hotel_options_chart3, index=0, key="chart3_filter")
-
-if selected_hotel_chart3 == "All":
+# Chart 3: Line chart for count of reviews by month
+if selected_hotel == "All":
     filtered_chart3 = df
 else:
-    filtered_chart3 = df[df['Hotel'] == selected_hotel_chart3]
+    filtered_chart3 = df[df['Hotel'] == selected_hotel]
 
 monthly_count = filtered_chart3.groupby(['Month', 'Review Group']).size().reset_index(name='Count')
 monthly_count_all = filtered_chart3.groupby('Month').size().reset_index(name='Count')
@@ -100,7 +97,13 @@ fig3 = px.line(
 )
 fig3.update_traces(mode='lines+markers')
 fig3.update_xaxes(categoryorder='array', categoryarray=month_order)
-st.plotly_chart(fig3)
+
+# Display Chart 2 and Chart 3 in two columns
+col1, col2 = st.columns(2)
+with col1:
+    st.plotly_chart(fig2)
+with col2:
+    st.plotly_chart(fig3)
 
 # Chart 4: Scatter chart for count of reviews (OTA vs Google) by month with filter
 hotel_options_scatter = ['All'] + df['Hotel'].unique().tolist()
