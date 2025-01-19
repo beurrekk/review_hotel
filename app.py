@@ -76,13 +76,13 @@ fig2.update_xaxes(categoryorder='array', categoryarray=month_order)
 st.plotly_chart(fig2)
 
 # Chart 3: Line chart for count of reviews by month with filter
-filter_options_chart3 = ['All', 'Google', 'OTA']
-selected_filter_chart3 = st.selectbox("Filter by Review Source for Chart 3:", filter_options_chart3, index=0, key="chart3_filter")
+hotel_options_chart3 = ['All'] + df['Hotel'].unique().tolist()
+selected_hotel_chart3 = st.selectbox("Filter by Hotel for Chart 3:", hotel_options_chart3, index=0, key="chart3_filter")
 
-if selected_filter_chart3 == "All":
+if selected_hotel_chart3 == "All":
     filtered_chart3 = df
 else:
-    filtered_chart3 = df[df['Review Group'] == selected_filter_chart3]
+    filtered_chart3 = df[df['Hotel'] == selected_hotel_chart3]
 
 monthly_count = filtered_chart3.groupby(['Month', 'Review Group']).size().reset_index(name='Count')
 monthly_count_all = filtered_chart3.groupby('Month').size().reset_index(name='Count')
