@@ -124,3 +124,20 @@ fig4 = px.scatter(
     color_discrete_sequence=colors
 )
 st.plotly_chart(fig4)
+
+# Chart 5: Diverging Bar Chart for OTA and Google reviews by month
+diverging_data = df.groupby(['Month', 'Review Group']).size().unstack(fill_value=0).reset_index()
+diverging_data.columns.name = None
+
+diverging_data['Google'] = -diverging_data['Google']  # Make Google reviews negative for diverging effect
+
+diverging_fig = px.bar(
+    diverging_data,
+    y='Month',
+    x=['OTA', 'Google'],
+    title='Diverging Bar Chart: OTA vs Google Reviews by Month',
+    labels={'value': 'Quantity of Reviews', 'variable': 'Review Source', 'Month': 'Month'},
+    orientation='h',
+    color_discrete_sequence=['#9A8CB5', '#F2DD83']
+)
+st.plotly_chart(diverging_fig)
